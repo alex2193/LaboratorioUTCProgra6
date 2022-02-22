@@ -60,4 +60,8 @@
     <Folder Include="dbo\Tables" />
     <Folder Include="dbo\StoreProcedures" />
   </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\Proveedor.sql" />
+    <Build Include="dbo\StoreProcedures\ProveedorObtener.sql" />
+  </ItemGroup>
 </Project>
