@@ -1,4 +1,6 @@
 ﻿using Dapper;
+using Dapper.Mapper;
+using Entity;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BD
 {
-    public class DataAccess
+    public class DataAccess : IDataAccess
     {
         private readonly IConfiguration config;
 
@@ -22,18 +24,207 @@ namespace BD
             new SqlConnectionStringBuilder(config.GetConnectionString("Conn")).ConnectionString);
 
         //Representación de retorno de una lista
-        public async Task<IEnumerable<T>> QueryAsync<T>(String sp, object Param= null, int? Timeout= null)
+        public async Task<IEnumerable<T>> QueryAsync<T>(String sp, object Param = null, int? Timeout = null)
         {
             try
             {
-                using (var exec= DBConnection)
+                using (var exec = DBConnection)
                 {
                     await exec.OpenAsync();
 
                     var result = exec.QueryAsync<T>(sql: sp, param: Param, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: Timeout);
 
                     return await result;
-                }            
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<dynamic>> QueryAsync(String sp, object Param = null, int? Timeout = null)
+        {
+            try
+            {
+                using (var exec = DBConnection)
+                {
+                    await exec.OpenAsync();
+
+                    var result = exec.QueryAsync(sql: sp, param: Param, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: Timeout);
+
+                    return await result;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        //Split es la representación del registro principal de cada entidad 
+        public async Task<IEnumerable<T>> QueryAsync<T, B>(String sp, string split, object Param = null, int? Timeout = null)
+        {
+            try
+            {
+                using (var exec = DBConnection)
+                {
+                    await exec.OpenAsync();
+
+                    var result = exec.QueryAsync<T, B>(sql: sp, param: Param, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: Timeout, splitOn: split);
+
+                    return await result;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<T>> QueryAsync<T, B, C>(String sp, string split, object Param = null, int? Timeout = null)
+        {
+            try
+            {
+                using (var exec = DBConnection)
+                {
+                    await exec.OpenAsync();
+
+                    var result = exec.QueryAsync<T, B, C>(sql: sp, param: Param, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: Timeout, splitOn: split);
+
+                    return await result;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<T>> QueryAsync<T, B, C, D>(String sp, string split, object Param = null, int? Timeout = null)
+        {
+            try
+            {
+                using (var exec = DBConnection)
+                {
+                    await exec.OpenAsync();
+
+                    var result = exec.QueryAsync<T, B, C, D>(sql: sp, param: Param, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: Timeout, splitOn: split);
+
+                    return await result;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<T>> QueryAsync<T, B, C, D, E>(String sp, string split, object Param = null, int? Timeout = null)
+        {
+            try
+            {
+                using (var exec = DBConnection)
+                {
+                    await exec.OpenAsync();
+
+                    var result = exec.QueryAsync<T, B, C, D, E>(sql: sp, param: Param, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: Timeout, splitOn: split);
+
+                    return await result;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<T>> QueryAsync<T, B, C, D, E, F>(String sp, string split, object Param = null, int? Timeout = null)
+        {
+            try
+            {
+                using (var exec = DBConnection)
+                {
+                    await exec.OpenAsync();
+
+                    var result = exec.QueryAsync<T, B, C, D, E, F>(sql: sp, param: Param, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: Timeout, splitOn: split);
+
+                    return await result;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<T>> QueryAsync<T, B, C, D, E, F, G>(String sp, string split, object Param = null, int? Timeout = null)
+        {
+            try
+            {
+                using (var exec = DBConnection)
+                {
+                    await exec.OpenAsync();
+
+                    var result = exec.QueryAsync<T, B, C, D, E, F, G>(sql: sp, param: Param, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: Timeout, splitOn: split);
+
+                    return await result;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        //Metodo de acceo de datos para obtener el detalle de un registro 
+        public async Task<T> QueryFirstAsync<T>(String sp, object Param = null, int? Timeout = null)
+        {
+            try
+            {
+                using (var exec = DBConnection)
+                {
+                    await exec.OpenAsync();
+
+                    var result = exec.QueryFirstOrDefaultAsync<T>(sql: sp, param: Param, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: Timeout);
+
+                    return await result;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<DBEntity> ExecuteAsync(String sp, object Param = null, int? Timeout = null)
+        {
+            try
+            {
+                using (var exec = DBConnection)
+                {
+                    await exec.OpenAsync();
+
+                    var result = await exec.ExecuteReaderAsync(sql: sp, param: Param, commandType: System.Data.CommandType.StoredProcedure, commandTimeout: Timeout);
+
+                    await result.ReadAsync();
+
+                    return new()
+                    {
+                        CodeError = result.GetInt32(0),
+                        MsgError = result.GetString(1)
+                    };
+                }
+
             }
             catch (Exception)
             {
@@ -42,4 +233,6 @@ namespace BD
             }
         }
     }
+
+
 }
