@@ -1,6 +1,20 @@
 ﻿CREATE PROCEDURE [dbo].[ProveedorObtener]
-	@param1 int = 0,
-	@param2 int
-AS
-	SELECT @param1, @param2
-RETURN 0
+	@IdProveedor INT = NULL
+
+AS 
+BEGIN 
+  SET NOCOUNT ON
+  
+  /*Obtener datos de proveedor*/
+  SELECT 
+		IdProveedor
+		,Identificacion
+		,Nombre
+		,PrimerApellido
+		,SegundoApellido
+		,Edad
+		,FechaNacimiento
+  FROM dbo.Proveedor
+  WHERE
+	   (@IdProveedor IS NULL OR IdProveedor=@IdProveedor)
+END
